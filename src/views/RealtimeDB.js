@@ -2,6 +2,7 @@ import { onValue, ref, set } from "firebase/database"
 import { useEffect, useState } from "react"
 import { realtimedb } from "../firebase-config"
 import { uuidv4 } from "@firebase/util"
+import InputImage from "../component/InputImage"
 
 const RealtimeDB = () => {
     const [users, setUsers] = useState([])
@@ -59,6 +60,9 @@ const RealtimeDB = () => {
                 <input type="text" placeholder="profile" value={fields.profile_photo} onChange={(e) => setFields({...fields, profile_photo: e.target.value})} />
                 <button>Add User</button>
                 </form>
+
+                <h3>Upload file</h3>
+                <InputImage />       
             </div>
 
             {
