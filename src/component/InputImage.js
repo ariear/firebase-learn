@@ -7,17 +7,22 @@ const InputImage = () => {
 
     const onuploadprofile = async (e) => {
         const image = e.target.files[0]
-        const fileRef = ref(storageref, image.name)
+        const fileRef = ref(storageref, `profile/${image.name}`)
         const uploadTask = uploadBytesResumable(fileRef, image)
         
         uploadTask.on('state_changed', (snapshot) => {
+            
+        }, (error) => {
+
+        },
+        () => {
             getDownloadURL(uploadTask.snapshot.ref).then((url) => {
                 console.log(url);
                 setUrlImage(url)
             })
         })
     }
-
+    
     return (
         <div>
             <input type="file" onChange={(e) => onuploadprofile(e)} />
