@@ -1,4 +1,4 @@
-import { onValue, ref, set } from "firebase/database"
+import { onValue, ref, set, remove, update } from "firebase/database"
 import {ref as refStorage, uploadBytesResumable , getDownloadURL} from "firebase/storage"
 import { useEffect, useState } from "react"
 import { realtimedb, storageref } from "../firebase-config"
@@ -43,7 +43,9 @@ const RealtimeDB = () => {
         uploadTask.on('state_changed', (snapshot) => {}, (error) => { },() => {
             getDownloadURL(uploadTask.snapshot.ref).then((url) => {
 
-                set(ref(realtimedb, `users/${uuidv4()}`), {
+                const uid = uuidv4()
+                set(ref(realtimedb, `users/${uid}`), {
+                    uid,
                     username: fields.username,
                     email: fields.email,
                     profile_photo: url
@@ -53,9 +55,16 @@ const RealtimeDB = () => {
         })
     }
 
-    // const deleteUser = () => {
-    //     remove(ref(realtimedb, 'users/h31jk23hj12k3h1jk31jk3h1jk3hkj13h131'))
-    // }
+    const deleteUser = (uid) => {
+        remove(ref(realtimedb, `users/${uid}`))
+    }
+
+    const updateUser = (uid) => {
+        const updates = {}
+        updates[`/users/${uid}/email`] = 'satir terupdate'
+        
+        return update(ref(realtimedb), updates)
+    }
 
     useEffect(() => {
         getUsers()
@@ -81,6 +90,8 @@ const RealtimeDB = () => {
                 <div key={index} style={{ backgroundColor: 'lightblue', width: 'max-content', padding: 10 }}>
                     <p>{user.email}</p>
                     <img src={user.profile_photo} width="200" alt="" />
+                    <button onClick={() => updateUser(user.uid)} >update</button>
+                    <button onClick={() => deleteUser(user.uid)} >delete</button>
                 </div>
                 )
             }
